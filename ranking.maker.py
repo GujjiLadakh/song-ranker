@@ -12,7 +12,7 @@ import logging
 #############
 EMPTY_STRING = ''
 LAST_TRACK = -1
-FILENAME = 'rankings.txt'
+FILENAME = 'ranked.txt'
 
 ###########
 # Classes #
@@ -105,13 +105,13 @@ def is_processing_over(Albums: list[Album], num_of_albums: int) -> bool:
         return True
     return False
 
-def display_final_ranking(Final_ranking: deque[Track]) -> None:
+def display_final_ranking(Albums: list[Album], Final_ranking: deque[Track], artist_name: str) -> None:
     print()
     print('Final ranking')
     for idx, track in enumerate(Final_ranking):
         track.position = idx + 1
         print(f'{track.position}: {track.track_name}')
-    with open(FILENAME, 'w') as file:
+    with open(f'{artist_name}_{FILENAME}', 'w') as file:
         for song in Final_ranking:
             file.write(f'{song.position}: {song.track_name}\n')
         calculate_averages(Albums)
@@ -128,13 +128,14 @@ def calculate_averages(Albums: list[Album]) -> None:
 
 def ranker() -> None:
     # logger.info('Starting program')
+    artist_name: str = input('Enter artist name: ')
     num_of_albums: int = int(input('Enter the number of albums: '))
     Albums, Final_ranking, display = reset_data_structures(num_of_albums)
     Albums, display, num_of_albums = initialise(Albums, display, num_of_albums)
     while not is_processing_over(Albums, num_of_albums):
         display_menu(Albums, display, num_of_albums)
         get_user_choice(Albums, display, Final_ranking, num_of_albums)
-    display_final_ranking(Final_ranking)
+    display_final_ranking(Albums, Final_ranking, artist_name)
     # logger.info('End of program')
 
 if __name__ == '__main__':
