@@ -31,6 +31,8 @@ class Album:
         self.num_of_tracks: int = 0
         self.is_empty: bool = False
         self.tracklist: list[str] = []
+        self.tracklist_copy: list[Track] = []
+        self.average: int = 0
 
     def __repr__(self):
         return f'Album name: {self.album_name}\nNumber of tracks: {self.num_of_tracks}\nTracklist: {",".join(self.tracklist)}'
@@ -91,7 +93,10 @@ def get_user_choice(Albums: list[Album], display: list[str], Final_ranking: dequ
     choice: Union[None, str] = None
     while choice not in display:
         choice = input('Enter track to add: ')
-    Final_ranking.appendleft(Track(choice))
+    current_track = Track(choice)
+    Final_ranking.appendleft(current_track)
+    album_track = Albums[display.index(choice)]
+    album_track.tracklist_copy.append(current_track)
     Albums, display, num_of_albums = update_display(Albums, display, num_of_albums, choice)
     return Albums, display, Final_ranking, num_of_albums
 
@@ -109,7 +114,17 @@ def display_final_ranking(Final_ranking: deque[Track]) -> None:
     with open(FILENAME, 'w') as file:
         for song in Final_ranking:
             file.write(f'{song.position}: {song.track_name}\n')
+        calculate_averages(Albums)
+        file.write('\n')
+        for album in Albums:
+            file.write(f'{album.album_name}: {album.average:.0f}\n')
     print()
+
+def calculate_averages(Albums: list[Album]) -> None:
+    for album in Albums:
+        for track in album.tracklist_copy:
+            album.average += track.position
+        album.average /= len(album.tracklist_copy)
 
 def ranker() -> None:
     # logger.info('Starting program')
