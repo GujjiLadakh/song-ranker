@@ -61,7 +61,7 @@ def initialise(Albums: list[Album], display: list[str], num_of_albums: int) -> T
 def display_menu(Albums: list[Album], display: list[str], num_of_albums: int) -> None:
     print()
     for album in range(num_of_albums):
-        print(f'{Albums[album].album_name}: {display[album]:>20}')
+        print(f'({len(Albums[album].tracklist)}){Albums[album].album_name}: {display[album]}')
     print()
 
 def is_empty(Albums: list[Album], index: int) -> bool:
